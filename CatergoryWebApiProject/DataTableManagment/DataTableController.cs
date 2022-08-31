@@ -96,6 +96,129 @@ namespace CatergoryWebApiProject.DataTableManagment
             return dt;
         }
 
+        public static DataTable DeleteByParameter(int Id)
+        {
+            DataTable dt = SqlConnector.ExQuery(
+                @"SELECT *
+                FROM CategoryTable
+                WHERE 
+                MainCategoryId = @Id OR
+                CategoryId = @Id OR
+                SubCategoryId = @Id;
+                DELETE FROM CategoryTable
+                WHERE 
+                MainCategoryId = @Id OR
+                CategoryId = @Id OR
+                SubCategoryId = @Id",
+                new string[] 
+                { 
+                    "@Id"
+                },
+                new string[] 
+                { 
+                    Id.ToString()
+                },
+                new SqlDbType[]
+                { 
+                    SqlDbType.Int
+                });
+
+            return dt;
+        }
+
+        public static DataTable DeleteByParameter(string MainCategoryName)
+        {
+            DataTable dt = SqlConnector.ExQuery(
+                @"SELECT *
+                FROM CategoryTable
+                WHERE 
+                MainCategoryName = @MainCategoryName;
+                DELETE FROM CategoryTable
+                WHERE 
+                MainCategoryName = @MainCategoryName",
+                new string[]
+                {
+                    "@MainCategoryName"
+                },
+                new string[]
+                {
+                    MainCategoryName
+                },
+                new SqlDbType[]
+                {
+                    SqlDbType.VarChar
+                });
+
+            return dt;
+        }
+
+        public static DataTable DeleteByParameter(string MainCategoryName, string CategoryName)
+        {
+            DataTable dt = SqlConnector.ExQuery(
+                @"SELECT *
+                FROM CategoryTable
+                WHERE 
+                MainCategoryName = @MainCategoryName AND
+                CategoryName = @CategoryName;
+                DELETE FROM CategoryTable
+                WHERE 
+                MainCategoryName = @MainCategoryName AND
+                CategoryName = @CategoryName",
+                new string[]
+                {
+                    "@MainCategoryName",
+                    "@CategoryName"
+                },
+                new string[]
+                {
+                    MainCategoryName,
+                    CategoryName
+                },
+                new SqlDbType[]
+                {
+                    SqlDbType.VarChar,
+                    SqlDbType.VarChar
+                });
+
+            return dt;
+        }
+
+        public static DataRow DeleteByParameter(string MainCategoryName, string CategoryName, string SubCategoryName)
+        {
+            DataTable dt = SqlConnector.ExQuery(
+                @"SELECT *
+                FROM CategoryTable
+                WHERE 
+                MainCategoryName = @MainCategoryName AND
+                CategoryName = @CategoryName AND
+                SubCategoryName = @SubCategoryName;
+                DELETE FROM CategoryTable
+                WHERE 
+                MainCategoryName = @MainCategoryName AND
+                CategoryName = @CategoryName AND
+                SubCategoryName = @SubCategoryName",
+                new string[]
+                {
+                    "@MainCategoryName",
+                    "@CategoryName",
+                    "@SubCategoryName"
+                },
+                new string[]
+                {
+                    MainCategoryName,
+                    CategoryName,
+                    SubCategoryName
+                },
+                new SqlDbType[]
+                {
+                    SqlDbType.VarChar,
+                    SqlDbType.VarChar,
+                    SqlDbType.VarChar
+                });
+
+            return dt.Rows[0];
+        }
+
         public static DataRow Create(string MainCategoryName, string CategoryName, string SubCategoryName, CreateMode createMode)
         {
             DataTable dt = new DataTable();
@@ -144,6 +267,42 @@ namespace CatergoryWebApiProject.DataTableManagment
                 );
 
             return dt.Rows[0];
+        }
+
+        public static DataTable Update(int Id, string NewName)
+        {
+            string condText;
+            string setText;
+
+            SetUpdateParam(Id, NewName, out condText, out setText);
+
+            DataTable dt = SqlConnector.ExQuery(
+                @$"UPDATE CategoryTable
+                SET {setText} WHERE {condText};
+                SELECT *
+                FROM CategoryTable
+                WHERE 
+                MainCategoryId = @Id OR
+                CategoryId = @Id OR
+                SubCategoryId = @Id;
+                ", new string[] 
+                { 
+                    "@Id",
+                    "@Name"
+                },
+                new string[] 
+                { 
+                    Id.ToString(),
+                    NewName
+                },
+                new SqlDbType[] 
+                { 
+                    SqlDbType.Int,
+                    SqlDbType.VarChar
+                }
+                );
+
+            return dt;
         }
 
         public static DataTable RowsBy(int id, string columnName)
@@ -268,6 +427,34 @@ namespace CatergoryWebApiProject.DataTableManagment
             }
 
             return idDt;
+        }
+
+        private static void SetUpdateParam(int Id, string NewName, out string condText, out string setText)
+        {
+            condText = "";
+            setText = "";
+
+            switch(Id.ToString().Length)
+            {
+                case 3:
+
+                    condText = "MainCategoryId = @Id";
+                    setText = "MainCategoryName = @Name";
+
+                    break;
+                case 6:
+
+                    condText = "CategoryId = @Id";
+                    setText = "CategoryName = @Name";
+
+                    break;
+                case 9:
+
+                    condText = "SubCategoryId = @Id";
+                    setText = "SubCategoryName = @Name";
+
+                    break;
+            }
         }
     }
 }

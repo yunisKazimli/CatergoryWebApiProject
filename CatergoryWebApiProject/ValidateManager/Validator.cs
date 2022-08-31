@@ -14,6 +14,36 @@ namespace CatergoryWebApiProject.ValidateManager
             else IsNameExist(names, createMode);
         }
 
+        public static void NameTest(int Id, string NewName)
+        {
+            DataTable dt;
+
+            NameFormatTest(new string[] { NewName });
+
+            if (Id < 1000) IsNewName(new string[] { NewName }, CreateMode.NewBranch);
+
+            Id /= 1000;
+
+            dt = SqlConnector.ExQuery("SELECT * FROM CategoryTable WHERE (MainCategoryId = @Id AND CategoryName = @Name) OR (CategoryId = @Id AND SubCategoryName = @Name)",
+                new string[]
+                {
+                    "@Id",
+                    "@Name"
+                },
+                new string[]
+                {
+                    Id.ToString(),
+                    NewName
+                },
+                new SqlDbType[]
+                {
+                    SqlDbType.Int,
+                    SqlDbType.VarChar
+                });
+
+            if (dt.Rows.Count != 0) throw new AlreadyExistExceptions();
+        }
+
         private static void NameFormatTest(string[] names)
         {
             for (int i = 0; i < names.Length; i++) if (names[i] == null || names[i] == "") throw new EmptyParameterException();

@@ -12,6 +12,22 @@ namespace CatergoryWebApiProject.Controllers
         {
             return Ok(DataConverter.ConvertToList(DataTableController.GetAll()));
         }
+        
+        [HttpGet("GetByCategoryId")]
+        public IActionResult GetByParameter(int Id)
+        {
+            try
+            {
+                Validator.IdTest(Id);
+            }
+
+            catch (InvalidParameterException e)
+            {
+                return Problem(e.ToString());
+            }
+
+            return Ok(DataConverter.ConvertToList(DataTableController.GetByParameter(Id)));
+        }
 
         [HttpGet("GetByMainCategoryName")]
         public IActionResult GetByParameter(string MainCategoryName)
@@ -43,22 +59,6 @@ namespace CatergoryWebApiProject.Controllers
             }
 
             return Ok(DataConverter.ConvertToList(DataTableController.GetByParameter(MainCategoryName, CategoryName)));
-        }
-
-        [HttpGet("GetByCategoryId")]
-        public IActionResult GetByParameter(int Id)
-        {
-            try
-            {
-                Validator.IdTest(Id);
-            }
-
-            catch (InvalidParameterException e)
-            {
-                return Problem(e.ToString());
-            }
-
-            return Ok(DataConverter.ConvertToList(DataTableController.GetByParameter(Id)));
         }
 
         [HttpPost("CreateNewBranch")]
@@ -104,6 +104,83 @@ namespace CatergoryWebApiProject.Controllers
             }
 
             return Ok(DataConverter.ConvertToCategory(DataTableController.Create(MainCategoryName, CategoryName, SubCategoryName, CreateMode.InCategory)));
+        }
+
+        [HttpPut("Update")]
+        public IActionResult Update(int Id, string NewName)
+        {
+            try
+            {
+                Validator.IdTest(Id);
+                Validator.NameTest(Id, NewName);
+
+            }
+            catch (InvalidParameterException e)
+            {
+                return Problem(e.ToString());
+            }
+
+            return Ok(DataConverter.ConvertToList(DataTableController.Update(Id, NewName)));
+        }
+
+        [HttpDelete("DeleteById")]
+        public IActionResult DeleteByParameter(int Id)
+        {
+            try
+            {
+                Validator.IdTest(Id);
+            }
+            catch (InvalidParameterException e)
+            {
+                return Problem(e.ToString());
+            }
+
+            return Ok(DataConverter.ConvertToList(DataTableController.DeleteByParameter(Id)));
+        }
+
+        [HttpDelete("DeleteByMainCategoryName")]
+        public IActionResult DeleteByParameter(string MainCategoryName)
+        {
+            try
+            {
+                Validator.NameTest(new string[] { MainCategoryName }, CreateMode.NewBranch, false);
+            }
+            catch (InvalidParameterException e)
+            {
+                return Problem(e.ToString());
+            }
+
+            return Ok(DataConverter.ConvertToList(DataTableController.DeleteByParameter(MainCategoryName)));
+        }
+
+        [HttpDelete("DeleteByCategoryName")]
+        public IActionResult DeleteByParameter(string MainCategoryName, string CategoryName)
+        {
+            try
+            {
+                Validator.NameTest(new string[] { MainCategoryName, CategoryName }, CreateMode.InMainCategory, false);
+            }
+            catch (InvalidParameterException e)
+            {
+                return Problem(e.ToString());
+            }
+
+            return Ok(DataConverter.ConvertToList(DataTableController.DeleteByParameter(MainCategoryName, CategoryName)));
+        }
+
+        [HttpDelete("DeleteBySubCategoryName")]
+        public IActionResult DeleteByParameter(string MainCategoryName, string CategoryName, string SubCategoryName)
+        {
+            try
+            {
+                Validator.NameTest(new string[] { MainCategoryName, CategoryName, SubCategoryName }, CreateMode.InCategory, false);
+            }
+            catch (InvalidParameterException e)
+            {
+                return Problem(e.ToString());
+            }
+
+            return Ok(DataConverter.ConvertToCategory(DataTableController.DeleteByParameter(MainCategoryName, CategoryName, SubCategoryName)));
         }
 
         public IActionResult Index()

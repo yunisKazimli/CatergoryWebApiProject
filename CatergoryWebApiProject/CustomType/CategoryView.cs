@@ -7,6 +7,7 @@ namespace CatergoryWebApiProject.CustomType
 {
     public interface IcategoryView
     {
+        public int FullId { get; set; }
         public string MainCategoryName { get; set; }
         public string CategoryName { get; set; }
         public string SubCategoryName { get; set; }
@@ -15,12 +16,14 @@ namespace CatergoryWebApiProject.CustomType
 
     public class CategoryView : IcategoryView
     {
+        public int FullId { get; set; }
         public string MainCategoryName { get; set; }
         public string CategoryName { get; set; }
         public string SubCategoryName { get; set; }
 
-        public CategoryView(string mainCategoryName, string categoryName, string subCategoryName)
+        public CategoryView(int fullId, string mainCategoryName, string categoryName, string subCategoryName)
         {
+            FullId = fullId;
             MainCategoryName = mainCategoryName;
             CategoryName = categoryName;
             SubCategoryName = subCategoryName;
