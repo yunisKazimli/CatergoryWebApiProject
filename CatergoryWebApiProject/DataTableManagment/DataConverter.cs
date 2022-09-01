@@ -1,28 +1,44 @@
 ﻿using CatergoryWebApiProject.CustomException;
-using CatergoryWebApiProject.CustomType;
+using CatergoryWebApiProject.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 
 namespace CatergoryWebApiProject.DataTableManagment
 {
     public static class DataConverter
     {
-        public static List<CategoryView> ConvertToList(DataTable dt)
+        public static CategoryTableModel ConvertToList(DataTable dt)
         {
-            List<CategoryView> result = new List<CategoryView>();
+            CategoryTableModel result = new CategoryTableModel
+                (
+                    (
+                        from mainC in new DataView(dt).ToTable(true, "MainCategoryId", "MainCategoryName").AsEnumerable()
+                        select new MainCategoryModel
+                        (
+                            Convert.ToInt32(mainC["MainCategoryId"]),
+                            mainC["MainCategoryName"].ToString(),
+                            (
+                                from C in new DataView(dt).ToTable(true, "MainCategoryId", "CategoryId", "CategoryName").AsEnumerable().Where(el => el["MainCategoryId"].ToString() == mainC["MainCategoryId"].ToString())
+                                select new CategoryModel
+                                (
+                                    Convert.ToInt32(C["CategoryId"]),
+                                    C["CategoryName"].ToString(),
+                                    (
+                                        from subC in new DataView(dt).ToTable(true, "CategoryId", "SubCategoryId", "SubCategoryName").AsEnumerable().Where(el => el["CategoryId"].ToString() == C["CategoryId"].ToString())
+                                        select new SubCategoryModel
+                                        (
+                                            Convert.ToInt32(subC["SubCategoryId"]),
+                                            subC["SubCategoryName"].ToString()
 
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                result.Add(new CategoryView(Convert.ToInt32(dt.Rows[i][4]), dt.Rows[i][1].ToString(), dt.Rows[i][3].ToString(), dt.Rows[i][5].ToString()));
-            }
-
-            return result;
-        }
-
-        public static CategoryView ConvertToCategory(DataRow dr)
-        {
-            CategoryView result = new CategoryView(Convert.ToInt32(dr[4]), dr[1].ToString(), dr[3].ToString(), dr[5].ToString());
+                                        )
+                                    ).ToList()
+                                )
+                            ).ToList()
+                        )
+                    ).ToList()
+                );
 
             return result;
         }

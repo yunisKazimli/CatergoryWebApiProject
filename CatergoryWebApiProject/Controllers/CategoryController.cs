@@ -73,7 +73,7 @@ namespace CatergoryWebApiProject.Controllers
                 return Problem(e.ToString());
             }
 
-            return Ok(DataConverter.ConvertToCategory(DataTableController.Create(MainCategoryName, CategoryName, SubCategoryName, CreateMode.NewBranch)));
+            return Ok(DataConverter.ConvertToList(DataTableController.Create(MainCategoryName, CategoryName, SubCategoryName, CreateMode.NewBranch)));
         }
 
         [HttpPost("CreateInMainCategory")]
@@ -88,7 +88,7 @@ namespace CatergoryWebApiProject.Controllers
                 return Problem(e.ToString());
             }
 
-            return Ok(DataConverter.ConvertToCategory(DataTableController.Create(MainCategoryName, CategoryName, SubCategoryName, CreateMode.InMainCategory)));
+            return Ok(DataConverter.ConvertToList(DataTableController.Create(MainCategoryName, CategoryName, SubCategoryName, CreateMode.InMainCategory)));
         }
 
         [HttpPost("CreateInCategory")]
@@ -103,7 +103,7 @@ namespace CatergoryWebApiProject.Controllers
                 return Problem(e.ToString());
             }
 
-            return Ok(DataConverter.ConvertToCategory(DataTableController.Create(MainCategoryName, CategoryName, SubCategoryName, CreateMode.InCategory)));
+            return Ok(DataConverter.ConvertToList(DataTableController.Create(MainCategoryName, CategoryName, SubCategoryName, CreateMode.InCategory)));
         }
 
         [HttpPut("Update")]
@@ -180,7 +180,7 @@ namespace CatergoryWebApiProject.Controllers
                 return Problem(e.ToString());
             }
 
-            return Ok(DataConverter.ConvertToCategory(DataTableController.DeleteByParameter(MainCategoryName, CategoryName, SubCategoryName)));
+            return Ok(DataConverter.ConvertToList(DataTableController.DeleteByParameter(MainCategoryName, CategoryName, SubCategoryName)));
         }
 
         public IActionResult Index()

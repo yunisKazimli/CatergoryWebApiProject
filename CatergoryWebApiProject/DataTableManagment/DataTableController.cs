@@ -183,7 +183,7 @@ namespace CatergoryWebApiProject.DataTableManagment
             return dt;
         }
 
-        public static DataRow DeleteByParameter(string MainCategoryName, string CategoryName, string SubCategoryName)
+        public static DataTable DeleteByParameter(string MainCategoryName, string CategoryName, string SubCategoryName)
         {
             DataTable dt = SqlConnector.ExQuery(
                 @"SELECT *
@@ -216,10 +216,10 @@ namespace CatergoryWebApiProject.DataTableManagment
                     SqlDbType.VarChar
                 });
 
-            return dt.Rows[0];
+            return dt;
         }
 
-        public static DataRow Create(string MainCategoryName, string CategoryName, string SubCategoryName, CreateMode createMode)
+        public static DataTable Create(string MainCategoryName, string CategoryName, string SubCategoryName, CreateMode createMode)
         {
             DataTable dt = new DataTable();
             DataTable idDt = NewId(MainCategoryName, CategoryName, SubCategoryName, createMode);
@@ -266,7 +266,7 @@ namespace CatergoryWebApiProject.DataTableManagment
                 }
                 );
 
-            return dt.Rows[0];
+            return dt;
         }
 
         public static DataTable Update(int Id, string NewName)
