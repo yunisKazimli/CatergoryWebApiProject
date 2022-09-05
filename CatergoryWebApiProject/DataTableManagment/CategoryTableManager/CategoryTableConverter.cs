@@ -1,13 +1,14 @@
-﻿using CatergoryWebApiProject.CustomException;
+﻿using CatergoryWebApiProject.CategoryTable.Models;
+using CatergoryWebApiProject.CustomException;
 using CatergoryWebApiProject.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
-namespace CatergoryWebApiProject.DataTableManagment
+namespace CatergoryWebApiProject.CategoryTableManager.DataTableManagment
 {
-    public static class DataConverter
+    public static class CategoryTableConverter
     {
         public static CategoryTableModel ConvertToList(DataTable dt)
         {

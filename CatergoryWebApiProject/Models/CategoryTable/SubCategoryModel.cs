@@ -1,4 +1,4 @@
-﻿namespace CatergoryWebApiProject.Models
+﻿namespace CatergoryWebApiProject.CategoryTable.Models
 {
     public class SubCategoryModel
     {

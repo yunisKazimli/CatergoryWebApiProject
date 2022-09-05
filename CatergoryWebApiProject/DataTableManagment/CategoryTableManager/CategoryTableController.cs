@@ -1,6 +1,7 @@
-﻿using System.Data;
+﻿using CatergoryWebApiProject.DataTableManagment;
+using System.Data;
 
-namespace CatergoryWebApiProject.DataTableManagment
+namespace CatergoryWebApiProject.CategoryTableManager.DataTableManagment
 {
     public enum CreateMode
     {
@@ -9,7 +10,7 @@ namespace CatergoryWebApiProject.DataTableManagment
         InCategory
     }
 
-    public static class DataTableController
+    public static class CategoryTableController
     {
         public static DataTable GetAll()
         {

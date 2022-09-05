@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
-namespace CatergoryWebApiProject.Models
+namespace CatergoryWebApiProject.CategoryTable.Models
 {
     public class MainCategoryModel
     {

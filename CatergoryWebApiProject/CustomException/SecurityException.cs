@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace CatergoryWebApiProject.CustomException
 {
-    public class AlreadyExistExceptions : InvalidParameterException
+    public class SecurityException : BaseException
     {
     }
 }

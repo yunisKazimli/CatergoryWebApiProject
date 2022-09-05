@@ -1,10 +1,11 @@
-﻿using CatergoryWebApiProject.CustomException;
+﻿using CatergoryWebApiProject.CategoryTableManager.DataTableManagment;
+using CatergoryWebApiProject.CustomException;
 using CatergoryWebApiProject.DataTableManagment;
 using System.Data;
 
 namespace CatergoryWebApiProject.ValidateManager
 {
-    public static class Validator
+    public static class CategoryValidator
     {
         public static void NameTest(string[] names, CreateMode createMode, bool isNew)
         {
@@ -41,7 +42,7 @@ namespace CatergoryWebApiProject.ValidateManager
                     SqlDbType.VarChar
                 });
 
-            if (dt.Rows.Count != 0) throw new AlreadyExistExceptions();
+            if (dt.Rows.Count != 0) throw new AlreadyExistException();
         }
 
         private static void NameFormatTest(string[] names)
@@ -81,17 +82,17 @@ namespace CatergoryWebApiProject.ValidateManager
             {
                 case CreateMode.NewBranch:
 
-                    dt = DataTableController.RowsBy(id, "MainCategoryId");
+                    dt = CategoryTableController.RowsBy(id, "MainCategoryId");
 
                     break;
                 case CreateMode.InMainCategory:
 
-                    dt = DataTableController.RowsBy(id, "CategoryId");
+                    dt = CategoryTableController.RowsBy(id, "CategoryId");
 
                     break;
                 case CreateMode.InCategory:
 
-                    dt = DataTableController.RowsBy(id, "SubCategoryId");
+                    dt = CategoryTableController.RowsBy(id, "SubCategoryId");
 
                     break;
             }
@@ -109,7 +110,7 @@ namespace CatergoryWebApiProject.ValidateManager
         {
             DataTable dt = GetDtByMode(names, createMode);
 
-            if (dt.Rows.Count > 0) throw new AlreadyExistExceptions();
+            if (dt.Rows.Count > 0) throw new AlreadyExistException();
         }
 
         private static void IsNameExist(string[] names, CreateMode createMode)
@@ -125,7 +126,7 @@ namespace CatergoryWebApiProject.ValidateManager
             {
                 case CreateMode.NewBranch:
 
-                    return DataTableController.RowsBy("MainCategoryName = @MainCategoryName",
+                    return CategoryTableController.RowsBy("MainCategoryName = @MainCategoryName",
                         new string[] { "@MainCategoryName" },
                         names,
                         new SqlDbType[] { SqlDbType.VarChar });
@@ -134,7 +135,7 @@ namespace CatergoryWebApiProject.ValidateManager
 
                     IsNameExist(new string[] { names[0] }, CreateMode.NewBranch);
 
-                    return DataTableController.RowsBy("MainCategoryName = @MainCategoryName AND CategoryName = @CategoryName", 
+                    return CategoryTableController.RowsBy("MainCategoryName = @MainCategoryName AND CategoryName = @CategoryName", 
                         new string[] { "@MainCategoryName", "@CategoryName" }, 
                         names, 
                         new SqlDbType[] { SqlDbType.VarChar, SqlDbType.VarChar });
@@ -143,7 +144,7 @@ namespace CatergoryWebApiProject.ValidateManager
 
                     IsNameExist(new string[] { names[0], names[1] }, CreateMode.InMainCategory);
 
-                    return DataTableController.RowsBy("MainCategoryName = @MainCategoryName AND CategoryName = @CategoryName AND SubCategoryName = @SubCategoryName",
+                    return CategoryTableController.RowsBy("MainCategoryName = @MainCategoryName AND CategoryName = @CategoryName AND SubCategoryName = @SubCategoryName",
                         new string[] { "@MainCategoryName", "@CategoryName", "@SubCategoryName" },
                         names,
                         new SqlDbType[] { SqlDbType.VarChar, SqlDbType.VarChar, SqlDbType.VarChar });

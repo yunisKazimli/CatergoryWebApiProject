@@ -1,5 +1,6 @@
-﻿using CatergoryWebApiProject.CustomException;
-using CatergoryWebApiProject.DataTableManagment;
+﻿using CatergoryWebApiProject.CategoryTableManager.DataTableManagment;
+using CatergoryWebApiProject.CustomException;
+using CatergoryWebApiProject.SecurityManager;
 using CatergoryWebApiProject.ValidateManager;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,180 +8,199 @@ namespace CatergoryWebApiProject.Controllers
 {
     public class CategoryController : Controller
     {
-        [HttpGet("GetAll")]
+        [HttpGet("CategoryController/GetAll")]
         public IActionResult GetAll()
         {
-            return Ok(DataConverter.ConvertToList(DataTableController.GetAll()));
+            try
+            {
+                SecurityController.Authorize(AccessLevelType.User);
+            }
+            catch (BaseException e)
+            {
+                return Problem(e.ToString());
+            }
+            return Ok(CategoryTableConverter.ConvertToList(CategoryTableController.GetAll()));
         }
-        
-        [HttpGet("GetByCategoryId")]
+
+        [HttpGet("CategoryController/GetByCategoryId")]
         public IActionResult GetByParameter(int Id)
         {
             try
             {
-                Validator.IdTest(Id);
+                SecurityController.Authorize(AccessLevelType.User);
+                CategoryValidator.IdTest(Id);
             }
 
-            catch (InvalidParameterException e)
+            catch (BaseException e)
             {
                 return Problem(e.ToString());
             }
 
-            return Ok(DataConverter.ConvertToList(DataTableController.GetByParameter(Id)));
+            return Ok(CategoryTableConverter.ConvertToList(CategoryTableController.GetByParameter(Id)));
         }
 
-        [HttpGet("GetByMainCategoryName")]
+        [HttpGet("CategoryController/GetByMainCategoryName")]
         public IActionResult GetByParameter(string MainCategoryName)
         {
             try
             {
-                Validator.NameTest(new string[] { MainCategoryName }, CreateMode.NewBranch, false);
+                SecurityController.Authorize(AccessLevelType.User);
+                CategoryValidator.NameTest(new string[] { MainCategoryName }, CreateMode.NewBranch, false);
             }
 
-            catch (InvalidParameterException e)
+            catch (BaseException e)
             {
                 return Problem(e.ToString());
             }
 
-            return Ok(DataConverter.ConvertToList(DataTableController.GetByParameter(MainCategoryName)));
+            return Ok(CategoryTableConverter.ConvertToList(CategoryTableController.GetByParameter(MainCategoryName)));
         }
 
-        [HttpGet("GetByCategoryName")]
+        [HttpGet("CategoryController/GetByCategoryName")]
         public IActionResult GetByParameter(string MainCategoryName, string CategoryName)
         {
             try
             {
-                Validator.NameTest(new string[] { MainCategoryName, CategoryName }, CreateMode.InMainCategory, false);
+                SecurityController.Authorize(AccessLevelType.User);
+                CategoryValidator.NameTest(new string[] { MainCategoryName, CategoryName }, CreateMode.InMainCategory, false);
             }
 
-            catch (InvalidParameterException e)
+            catch (BaseException e)
             {
                 return Problem(e.ToString());
             }
 
-            return Ok(DataConverter.ConvertToList(DataTableController.GetByParameter(MainCategoryName, CategoryName)));
+            return Ok(CategoryTableConverter.ConvertToList(CategoryTableController.GetByParameter(MainCategoryName, CategoryName)));
         }
 
-        [HttpPost("CreateNewBranch")]
+        [HttpPost("CategoryController/CreateNewBranch")]
         public IActionResult CreateNewBranch(string MainCategoryName, string CategoryName, string SubCategoryName)
         {
             try
             {
-                Validator.NameTest(new string[] { MainCategoryName, CategoryName, SubCategoryName }, CreateMode.NewBranch, true);
+                SecurityController.Authorize(AccessLevelType.Employee);
+                CategoryValidator.NameTest(new string[] { MainCategoryName, CategoryName, SubCategoryName }, CreateMode.NewBranch, true);
             }
-            catch(InvalidParameterException e)
+            catch (BaseException e)
             {
                 return Problem(e.ToString());
             }
 
-            return Ok(DataConverter.ConvertToList(DataTableController.Create(MainCategoryName, CategoryName, SubCategoryName, CreateMode.NewBranch)));
+            return Ok(CategoryTableConverter.ConvertToList(CategoryTableController.Create(MainCategoryName, CategoryName, SubCategoryName, CreateMode.NewBranch)));
         }
 
-        [HttpPost("CreateInMainCategory")]
+        [HttpPost("CategoryController/CreateInMainCategory")]
         public IActionResult CreateInMainCategory(string MainCategoryName, string CategoryName, string SubCategoryName)
         {
             try
             {
-                Validator.NameTest(new string[] { MainCategoryName, CategoryName, SubCategoryName }, CreateMode.InMainCategory, true);
+                SecurityController.Authorize(AccessLevelType.Employee);
+                CategoryValidator.NameTest(new string[] { MainCategoryName, CategoryName, SubCategoryName }, CreateMode.InMainCategory, true);
             }
-            catch (InvalidParameterException e)
+            catch (BaseException e)
             {
                 return Problem(e.ToString());
             }
 
-            return Ok(DataConverter.ConvertToList(DataTableController.Create(MainCategoryName, CategoryName, SubCategoryName, CreateMode.InMainCategory)));
+            return Ok(CategoryTableConverter.ConvertToList(CategoryTableController.Create(MainCategoryName, CategoryName, SubCategoryName, CreateMode.InMainCategory)));
         }
 
-        [HttpPost("CreateInCategory")]
+        [HttpPost("CategoryController/CreateInCategory")]
         public IActionResult CreateInCategory(string MainCategoryName, string CategoryName, string SubCategoryName)
         {
             try
             {
-                Validator.NameTest(new string[] { MainCategoryName, CategoryName, SubCategoryName }, CreateMode.InCategory, true);
+                SecurityController.Authorize(AccessLevelType.Employee);
+                CategoryValidator.NameTest(new string[] { MainCategoryName, CategoryName, SubCategoryName }, CreateMode.InCategory, true);
             }
-            catch (InvalidParameterException e)
+            catch (BaseException e)
             {
                 return Problem(e.ToString());
             }
 
-            return Ok(DataConverter.ConvertToList(DataTableController.Create(MainCategoryName, CategoryName, SubCategoryName, CreateMode.InCategory)));
+            return Ok(CategoryTableConverter.ConvertToList(CategoryTableController.Create(MainCategoryName, CategoryName, SubCategoryName, CreateMode.InCategory)));
         }
 
-        [HttpPut("Update")]
+        [HttpPut("CategoryController/Update")]
         public IActionResult Update(int Id, string NewName)
         {
             try
             {
-                Validator.IdTest(Id);
-                Validator.NameTest(Id, NewName);
+                SecurityController.Authorize(AccessLevelType.Employee);
+                CategoryValidator.IdTest(Id);
+                CategoryValidator.NameTest(Id, NewName);
 
             }
-            catch (InvalidParameterException e)
+            catch (BaseException e)
             {
                 return Problem(e.ToString());
             }
 
-            return Ok(DataConverter.ConvertToList(DataTableController.Update(Id, NewName)));
+            return Ok(CategoryTableConverter.ConvertToList(CategoryTableController.Update(Id, NewName)));
         }
 
-        [HttpDelete("DeleteById")]
+        [HttpDelete("CategoryController/DeleteById")]
         public IActionResult DeleteByParameter(int Id)
         {
             try
             {
-                Validator.IdTest(Id);
+                SecurityController.Authorize(AccessLevelType.Employee);
+                CategoryValidator.IdTest(Id);
             }
-            catch (InvalidParameterException e)
+            catch (BaseException e)
             {
                 return Problem(e.ToString());
             }
 
-            return Ok(DataConverter.ConvertToList(DataTableController.DeleteByParameter(Id)));
+            return Ok(CategoryTableConverter.ConvertToList(CategoryTableController.DeleteByParameter(Id)));
         }
 
-        [HttpDelete("DeleteByMainCategoryName")]
+        [HttpDelete("CategoryController/DeleteByMainCategoryName")]
         public IActionResult DeleteByParameter(string MainCategoryName)
         {
             try
             {
-                Validator.NameTest(new string[] { MainCategoryName }, CreateMode.NewBranch, false);
+                SecurityController.Authorize(AccessLevelType.Employee);
+                CategoryValidator.NameTest(new string[] { MainCategoryName }, CreateMode.NewBranch, false);
             }
-            catch (InvalidParameterException e)
+            catch (BaseException e)
             {
                 return Problem(e.ToString());
             }
 
-            return Ok(DataConverter.ConvertToList(DataTableController.DeleteByParameter(MainCategoryName)));
+            return Ok(CategoryTableConverter.ConvertToList(CategoryTableController.DeleteByParameter(MainCategoryName)));
         }
 
-        [HttpDelete("DeleteByCategoryName")]
+        [HttpDelete("CategoryController/DeleteByCategoryName")]
         public IActionResult DeleteByParameter(string MainCategoryName, string CategoryName)
         {
             try
             {
-                Validator.NameTest(new string[] { MainCategoryName, CategoryName }, CreateMode.InMainCategory, false);
+                SecurityController.Authorize(AccessLevelType.Employee);
+                CategoryValidator.NameTest(new string[] { MainCategoryName, CategoryName }, CreateMode.InMainCategory, false);
             }
-            catch (InvalidParameterException e)
+            catch (BaseException e)
             {
                 return Problem(e.ToString());
             }
 
-            return Ok(DataConverter.ConvertToList(DataTableController.DeleteByParameter(MainCategoryName, CategoryName)));
+            return Ok(CategoryTableConverter.ConvertToList(CategoryTableController.DeleteByParameter(MainCategoryName, CategoryName)));
         }
 
-        [HttpDelete("DeleteBySubCategoryName")]
+        [HttpDelete("CategoryController/DeleteBySubCategoryName")]
         public IActionResult DeleteByParameter(string MainCategoryName, string CategoryName, string SubCategoryName)
         {
             try
             {
-                Validator.NameTest(new string[] { MainCategoryName, CategoryName, SubCategoryName }, CreateMode.InCategory, false);
+                SecurityController.Authorize(AccessLevelType.Employee);
+                CategoryValidator.NameTest(new string[] { MainCategoryName, CategoryName, SubCategoryName }, CreateMode.InCategory, false);
             }
-            catch (InvalidParameterException e)
+            catch (BaseException e)
             {
                 return Problem(e.ToString());
             }
 
-            return Ok(DataConverter.ConvertToList(DataTableController.DeleteByParameter(MainCategoryName, CategoryName, SubCategoryName)));
+            return Ok(CategoryTableConverter.ConvertToList(CategoryTableController.DeleteByParameter(MainCategoryName, CategoryName, SubCategoryName)));
         }
 
         public IActionResult Index()
