@@ -1,10 +1,4 @@
-﻿using CatergoryWebApiProject.SecurityManager;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace CatergoryWebApiProject.Models.UserTable
+﻿namespace CatergoryWebApiProject.Models.UserTable
 {
     public class UserTableModel
     {

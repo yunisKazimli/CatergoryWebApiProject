@@ -4,6 +4,7 @@ using CatergoryWebApiProject.Models.UserTable;
 using CatergoryWebApiProject.SecurityManager;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -28,11 +29,6 @@ namespace CatergoryWebApiProject.ValidateManager
             else IsNameExist(Name);
         }
 
-        public static void UserLoginned(string name, string password)
-        {
-            if (CurrentSecurityStatus.User.Name != name || !PasswordManager.PasswordEqual(CurrentSecurityStatus.User.Password, password)) throw new UserNotLoginnedException();
-        }
-
         public static void PasswordTest(string password)
         {
             if (password == null || password == "") throw new EmptyParameterException();
@@ -41,6 +37,11 @@ namespace CatergoryWebApiProject.ValidateManager
         public static void IdTest(int Id)
         {
             if (UserTableController.GetByParameter(Id).Rows.Count == 0) throw new NotFoundByParameterException();
+        }
+
+        public static void Authenticate(string name, string password)
+        {
+            if (!PasswordManager.PasswordEqual(UserTableConverter.ConvertToUser(UserTableController.GetByParameter(name).Rows[0]).Password, password)) throw new InvalidPasswordException();
         }
 
         public static void AccessLevelTest(AccessLevelType AccessLevel)
@@ -55,7 +56,8 @@ namespace CatergoryWebApiProject.ValidateManager
 
         private static void IsNameExist(string Name)
         {
-            if (UserTableController.GetByParameter(Name).Rows.Count == 0) throw new NotFoundByParameterException();
+            DataRowCollection d = UserTableController.GetByParameter(Name).Rows;
+            if (d.Count == 0) throw new NotFoundByParameterException();
         }
     }
 }

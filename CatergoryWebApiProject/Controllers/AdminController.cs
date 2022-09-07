@@ -3,29 +3,18 @@ using CatergoryWebApiProject.DataTableManagment.UserTableManager;
 using CatergoryWebApiProject.Models.UserTable;
 using CatergoryWebApiProject.SecurityManager;
 using CatergoryWebApiProject.ValidateManager;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CatergoryWebApiProject.Controllers
 {
+    [Authorize(Roles = "Admin")]
+    [Authorize("Bearer")]
     public class AdminController : Controller
     {
         [HttpGet("AdminController/GetAll")]
         public IActionResult GetAll()
         {
-            try
-            {
-                SecurityController.Authorize(AccessLevelType.Admin);
-            }
-
-            catch (BaseException e)
-            {
-                return Problem(e.ToString());
-            }
-
             return Ok(UserTableConverter.ConvertToList(UserTableController.GetAll()));
         }
 
@@ -34,7 +23,6 @@ namespace CatergoryWebApiProject.Controllers
         {
             try
             {
-                SecurityController.Authorize(AccessLevelType.Admin);
                 UserValidator.IdTest(Id);
             }
 
@@ -51,7 +39,6 @@ namespace CatergoryWebApiProject.Controllers
         {
             try
             {
-                SecurityController.Authorize(AccessLevelType.Admin);
                 UserValidator.NameTest(name, false);
             }
 
@@ -68,7 +55,6 @@ namespace CatergoryWebApiProject.Controllers
         {
             try
             {
-                SecurityController.Authorize(AccessLevelType.Admin);
                 UserValidator.AccessLevelTest(AccessLevel);
             }
 
@@ -85,7 +71,6 @@ namespace CatergoryWebApiProject.Controllers
         {
             try
             {
-                SecurityController.Authorize(AccessLevelType.Admin);
                 UserValidator.UserTest(Name, password, AccessLevel, true);
             }
 
@@ -102,7 +87,6 @@ namespace CatergoryWebApiProject.Controllers
         {
             try
             {
-                SecurityController.Authorize(AccessLevelType.Admin);
                 UserValidator.IdTest(Id);
                 UserValidator.UserTest(Name, password, AccessLevel, true);
             }
@@ -120,7 +104,6 @@ namespace CatergoryWebApiProject.Controllers
         {
             try
             {
-                SecurityController.Authorize(AccessLevelType.Admin);
                 UserValidator.IdTest(Id);
             }
 
