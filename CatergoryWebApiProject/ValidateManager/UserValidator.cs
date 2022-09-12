@@ -12,15 +12,6 @@ namespace CatergoryWebApiProject.ValidateManager
 {
     public static class UserValidator
     {
-        public static void UserTest(string Name, string Password, AccessLevelType AccessLevel, bool isNew)
-        {
-            NameTest(Name, isNew);
-
-            PasswordTest(Password);
-
-            AccessLevelTest(AccessLevel);
-        }
-
         public static void NameTest(string Name, bool isNew)
         {
             if (Name == null || Name == "") throw new EmptyParameterException();
@@ -42,11 +33,6 @@ namespace CatergoryWebApiProject.ValidateManager
         public static void Authenticate(string name, string password)
         {
             if (!PasswordManager.PasswordEqual(UserTableConverter.ConvertToUser(UserTableController.GetByParameter(name).Rows[0]).Password, password)) throw new InvalidPasswordException();
-        }
-
-        public static void AccessLevelTest(AccessLevelType AccessLevel)
-        {
-
         }
 
         private static void IsNameNew(string Name)

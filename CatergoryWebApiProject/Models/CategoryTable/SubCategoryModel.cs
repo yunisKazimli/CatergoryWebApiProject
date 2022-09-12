@@ -2,11 +2,14 @@
 {
     public class SubCategoryModel
     {
+        public int UserId { get; set; }
         public int SubCategoryId { get; set; }
         public string SubCategoryName { get; set; }
 
-        public SubCategoryModel(int id, string name)
+        public SubCategoryModel(int userId, int id, string name)
         {
+            UserId = userId;
+
             SubCategoryId = id;
 
             SubCategoryName = name;

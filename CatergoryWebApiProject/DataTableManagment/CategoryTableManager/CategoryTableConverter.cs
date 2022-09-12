@@ -27,9 +27,10 @@ namespace CatergoryWebApiProject.CategoryTableManager.DataTableManagment
                                     Convert.ToInt32(C["CategoryId"]),
                                     C["CategoryName"].ToString(),
                                     (
-                                        from subC in new DataView(dt).ToTable(true, "CategoryId", "SubCategoryId", "SubCategoryName").AsEnumerable().Where(el => el["CategoryId"].ToString() == C["CategoryId"].ToString())
+                                        from subC in new DataView(dt).ToTable(true, "UserId", "CategoryId", "SubCategoryId", "SubCategoryName").AsEnumerable().Where(el => el["CategoryId"].ToString() == C["CategoryId"].ToString())
                                         select new SubCategoryModel
                                         (
+                                            Convert.ToInt32(subC["UserId"]),
                                             Convert.ToInt32(subC["SubCategoryId"]),
                                             subC["SubCategoryName"].ToString()
 

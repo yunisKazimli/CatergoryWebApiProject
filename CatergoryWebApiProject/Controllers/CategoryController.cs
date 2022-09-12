@@ -1,9 +1,10 @@
 ﻿using CatergoryWebApiProject.CategoryTableManager.DataTableManagment;
 using CatergoryWebApiProject.CustomException;
-using CatergoryWebApiProject.SecurityManager;
 using CatergoryWebApiProject.ValidateManager;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Linq;
 
 namespace CatergoryWebApiProject.Controllers
 {
@@ -81,7 +82,7 @@ namespace CatergoryWebApiProject.Controllers
                 return Problem(e.ToString());
             }
 
-            return Ok(CategoryTableConverter.ConvertToList(CategoryTableController.Create(MainCategoryName, CategoryName, SubCategoryName, CreateMode.NewBranch)));
+            return Ok(CategoryTableConverter.ConvertToList(CategoryTableController.Create(Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(el => el.Type == "Id").Value), MainCategoryName, CategoryName, SubCategoryName, CreateMode.NewBranch)));
         }
 
         [Authorize(Roles = "Admin, Employee")]
@@ -97,7 +98,7 @@ namespace CatergoryWebApiProject.Controllers
                 return Problem(e.ToString());
             }
 
-            return Ok(CategoryTableConverter.ConvertToList(CategoryTableController.Create(MainCategoryName, CategoryName, SubCategoryName, CreateMode.InMainCategory)));
+            return Ok(CategoryTableConverter.ConvertToList(CategoryTableController.Create(Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(el => el.Type == "Id").Value), MainCategoryName, CategoryName, SubCategoryName, CreateMode.InMainCategory)));
         }
 
         [Authorize(Roles = "Admin, Employee")]
@@ -113,7 +114,7 @@ namespace CatergoryWebApiProject.Controllers
                 return Problem(e.ToString());
             }
 
-            return Ok(CategoryTableConverter.ConvertToList(CategoryTableController.Create(MainCategoryName, CategoryName, SubCategoryName, CreateMode.InCategory)));
+            return Ok(CategoryTableConverter.ConvertToList(CategoryTableController.Create(Convert.ToInt32(HttpContext.User.Claims.FirstOrDefault(el => el.Type == "Id").Value), MainCategoryName, CategoryName, SubCategoryName, CreateMode.InCategory)));
         }
 
         [Authorize(Roles = "Admin, Employee")]

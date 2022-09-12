@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using CatergoryWebApiProject.CustomException;
 using Microsoft.Data.SqlClient;
 
 namespace CatergoryWebApiProject.DataTableManagment
@@ -18,20 +19,22 @@ namespace CatergoryWebApiProject.DataTableManagment
         {
             DataTable dt = new DataTable();
 
-            sqlc.Open();
-            SqlCommand command = sqlc.CreateCommand();
-
-            for (int i = 0; i < paramNames.Length; i++)
+            using (SqlCommand command = sqlc.CreateCommand())
             {
-                command.Parameters.Add(paramNames[i].Split('_')[0], paramTypes[i]);
-                command.Parameters[i].Value = paramValues[i];
+                sqlc.Open();
+
+                for (int i = 0; i < paramNames.Length; i++)
+                {
+                    command.Parameters.Add(paramNames[i].Split('_')[0], paramTypes[i]);
+                    command.Parameters[i].Value = paramValues[i];
+                }
+
+                command.CommandText = commandText;
+
+                dt.Load(command.ExecuteReader());
+
+                sqlc.Close();
             }
-
-            command.CommandText = commandText;
-
-            dt.Load(command.ExecuteReader());
-
-            sqlc.Close();
 
             return dt;
         }
@@ -43,18 +46,21 @@ namespace CatergoryWebApiProject.DataTableManagment
 
         public static void ExNonQuery(string commandText, string[] paramNames, string[] paramValues, SqlDbType[] paramTypes)
         {
-            sqlc.Open();
-            SqlCommand command = sqlc.CreateCommand();
-
-            for (int i = 0; i < paramNames.Length; i++)
+            using (SqlCommand command = sqlc.CreateCommand())
             {
-                command.Parameters.Add(paramNames[i].Split('_')[0], paramTypes[i]);
-                command.Parameters[i].Value = paramValues[i];
-            }
+                sqlc.Open();
 
-            command.CommandText = commandText;
-            command.ExecuteNonQuery();
-            sqlc.Close();
+                for (int i = 0; i < paramNames.Length; i++)
+                {
+                    command.Parameters.Add(paramNames[i].Split('_')[0], paramTypes[i]);
+                    command.Parameters[i].Value = paramValues[i];
+                }
+
+                command.CommandText = commandText;
+                command.ExecuteNonQuery();
+
+                sqlc.Close();
+            }
         }
 
         public static void ExNonQuery(string commandText)

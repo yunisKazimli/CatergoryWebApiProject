@@ -1,4 +1,5 @@
 ﻿using CatergoryWebApiProject.DataTableManagment;
+using CatergoryWebApiProject.Models.UserTable;
 using System.Data;
 
 namespace CatergoryWebApiProject.CategoryTableManager.DataTableManagment
@@ -220,7 +221,7 @@ namespace CatergoryWebApiProject.CategoryTableManager.DataTableManagment
             return dt;
         }
 
-        public static DataTable Create(string MainCategoryName, string CategoryName, string SubCategoryName, CreateMode createMode)
+        public static DataTable Create(int UserId, string MainCategoryName, string CategoryName, string SubCategoryName, CreateMode createMode)
         {
             DataTable dt = new DataTable();
             DataTable idDt = NewId(MainCategoryName, CategoryName, SubCategoryName, createMode);
@@ -228,6 +229,7 @@ namespace CatergoryWebApiProject.CategoryTableManager.DataTableManagment
             dt = SqlConnector.ExQuery(
                 @"INSERT INTO CategoryTable 
                 VALUES(
+                    @UserId,
                     @MainCategoryId, 
                     @MainCategoryName,
                     @CategoryId, 
@@ -240,6 +242,7 @@ namespace CatergoryWebApiProject.CategoryTableManager.DataTableManagment
                 WHERE SubCategoryId = @SubCategoryId",
                 new string[]
                 {
+                    "@UserId",
                     "@MainCategoryID",
                     "@MainCategoryName",
                     "@CategoryId",
@@ -249,6 +252,7 @@ namespace CatergoryWebApiProject.CategoryTableManager.DataTableManagment
                 },
                 new string[]
                 {
+                    UserId.ToString(),
                     idDt.Rows[0][0].ToString(),
                     MainCategoryName,
                     idDt.Rows[0][1].ToString(),
@@ -258,6 +262,7 @@ namespace CatergoryWebApiProject.CategoryTableManager.DataTableManagment
                 },
                 new SqlDbType[]
                 {
+                    SqlDbType.Int,
                     SqlDbType.Int,
                     SqlDbType.VarChar,
                     SqlDbType.Int,

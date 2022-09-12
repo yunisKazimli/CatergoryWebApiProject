@@ -50,31 +50,16 @@ namespace CatergoryWebApiProject.Controllers
             return Ok(UserTableConverter.ConvertToList(UserTableController.GetByParameter(name)));
         }
 
-        [HttpGet("AdminController/GetByAccessLevel")]
-        public IActionResult GetByParameter(AccessLevelType AccessLevel)
-        {
-            try
-            {
-                UserValidator.AccessLevelTest(AccessLevel);
-            }
-
-            catch (BaseException e)
-            {
-                return Problem(e.ToString());
-            }
-
-            return Ok(UserTableConverter.ConvertToList(UserTableController.GetByParameter(AccessLevel)));
-        }
-
         [HttpPost("AdminController/CreateUser")]
         public IActionResult Create(string Name, string password, AccessLevelType AccessLevel)
         {
             try
             {
-                UserValidator.UserTest(Name, password, AccessLevel, true);
+                UserValidator.NameTest(Name, true);
+                UserValidator.PasswordTest(password);
             }
 
-            catch(BaseException e)
+            catch (BaseException e)
             {
                 return Problem(e.ToString());
             }
@@ -82,13 +67,13 @@ namespace CatergoryWebApiProject.Controllers
             return Ok(UserTableConverter.ConvertToList(UserTableController.Create(Name, a, AccessLevel)));
         }
 
-        [HttpPut("AdminController/Update")]
-        public IActionResult Set(int Id, string Name, string password, AccessLevelType AccessLevel)
+        [HttpPut("AdminController/UpdateName")]
+        public IActionResult SetName(int Id, string Name)
         {
             try
             {
                 UserValidator.IdTest(Id);
-                UserValidator.UserTest(Name, password, AccessLevel, true);
+                UserValidator.NameTest(Name, true);
             }
 
             catch (BaseException e)
@@ -96,7 +81,46 @@ namespace CatergoryWebApiProject.Controllers
                 return Problem(e.ToString());
             }
 
-            return Ok(UserTableConverter.ConvertToList(UserTableController.Update(new UserTableModel(Id, Name, PasswordManager.PasswordHash(password), AccessLevel)))) ;
+            UserTableModel user = UserTableConverter.ConvertToUser(UserTableController.GetByParameter(Id).Rows[0]);
+
+            return Ok(UserTableConverter.ConvertToList(UserTableController.Update(new UserTableModel(user.Id, Name, user.Password, user.AccessLevel))));
+        }
+
+        [HttpPut("AdminController/UpdatePassword")]
+        public IActionResult SetPassword(int Id, string Password)
+        {
+            try
+            {
+                UserValidator.IdTest(Id);
+                UserValidator.PasswordTest(Password);
+            }
+
+            catch (BaseException e)
+            {
+                return Problem(e.ToString());
+            }
+
+            UserTableModel user = UserTableConverter.ConvertToUser(UserTableController.GetByParameter(Id).Rows[0]);
+
+            return Ok(UserTableConverter.ConvertToList(UserTableController.Update(new UserTableModel(user.Id, user.Name, PasswordManager.PasswordHash(Password), user.AccessLevel))));
+        }
+
+        [HttpPut("AdminController/UpdateAccessLevel")]
+        public IActionResult SetAccessLevel(int Id, AccessLevelType AccessLevel)
+        {
+            try
+            {
+                UserValidator.IdTest(Id);
+            }
+
+            catch (BaseException e)
+            {
+                return Problem(e.ToString());
+            }
+
+            UserTableModel user = UserTableConverter.ConvertToUser(UserTableController.GetByParameter(Id).Rows[0]);
+
+            return Ok(UserTableConverter.ConvertToList(UserTableController.Update(new UserTableModel(user.Id, user.Name, user.Password, AccessLevel))));
         }
 
         [HttpDelete("AdminController/Delete")]

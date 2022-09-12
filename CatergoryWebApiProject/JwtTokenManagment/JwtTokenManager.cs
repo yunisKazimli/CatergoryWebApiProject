@@ -20,7 +20,7 @@ namespace CatergoryWebApiProject.JwtTokenManagment
             {
                 Subject = new ClaimsIdentity(new List<Claim>
                 {
-                    new Claim(ClaimTypes.NameIdentifier, user.Name),
+                    new Claim("Id", user.Id.ToString()),
                     new Claim(ClaimTypes.Role, user.AccessLevel.ToString())
                 }),
                 Audience = "AAA",

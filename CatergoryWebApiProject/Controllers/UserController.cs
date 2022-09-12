@@ -1,8 +1,6 @@
 ﻿using CatergoryWebApiProject.CustomException;
-using CatergoryWebApiProject.DataTableManagment;
 using CatergoryWebApiProject.DataTableManagment.UserTableManager;
 using CatergoryWebApiProject.JwtTokenManagment;
-using CatergoryWebApiProject.SecurityManager;
 using CatergoryWebApiProject.ValidateManager;
 using Microsoft.AspNetCore.Mvc;
 
